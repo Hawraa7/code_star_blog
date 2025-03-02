@@ -2,6 +2,12 @@
 
 {% block content %}
 
+{% for event in event_list %}
+<a href="{% url 'event_detail' event.event_id %}">
+    <h2>{{ event.event_name }}</h2>
+</a>
+{% endfor %}
+
 <!-- index.html content starts here -->
 <div class="container-fluid">
     <div class="row">
@@ -18,7 +24,7 @@
                                     <p class="author">Author: {{ post.author }}</p>
                                 </div>
                             </div>
-                            <a href="{% url 'post_detail' post.slug %}" class="post-link">
+                            <a href="#" class="post-link">
                                 <h2 class="card-title">{{ post.title }}</h2>
                                 <p class="card-text">{{ post.excerpt }}</p>
                             </a>
@@ -41,11 +47,6 @@
     {% if is_paginated %}
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-            <li>
-                <a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; PREV</a>
-            </li>
-            {% endif %}
             {% if page_obj.has_next %}
             <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
             {% endif %}
