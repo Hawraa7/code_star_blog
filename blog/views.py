@@ -5,16 +5,33 @@ from django.http import HttpResponseRedirect
 from .models import Event, Post, Comment
 from .forms import CommentForm
 
+
 class PostList(generic.ListView):
    model = Event
    template_name = "index.html"
    paginate_by = 12
 
+
 def event_detail(request, event_id):
    event = get_object_or_404(Event, id=event_id)
    return render(request, "event_detail.html", {"event": event})
 
+
 def post_detail(request, slug):
+   """
+   display an individual :model:`blog.Post`.
+   **Context**
+   ``post``
+      an instance of :model:`blog.Post`.
+   ``comments``
+      all approved comments related to the post.
+   ``comment_count``
+      a count of approved comments related to the post.
+   ``comment_form``
+      an instance of :form:`blog.CommentForm`.
+   **template:**
+   :template: `blog\post_detail.html`
+   """
    queryset = Post.objects.filter(status=1)  # Ensure correct indentation
    post = get_object_or_404(queryset, slug=slug)
    comments = post.comments.all().order_by("-created_on")
@@ -45,7 +62,18 @@ def post_detail(request, slug):
       },
    )
 
+
 def comment_edit(request, slug, comment_id):
+   """
+   display an individual comment for edit.
+   **context**
+   ``post``
+      an instance of :model:`blog.Post`.
+   ``comment``
+      a single comment related to the post
+   ``comment_form``
+      an instance of :form:`blog.CommentForm`
+   """
    if request.method == "POST" :
       queryset = Post.objects.filter(status=1)
       post = get_object_or_404(queryset, slug=slug)
@@ -65,6 +93,14 @@ def comment_edit(request, slug, comment_id):
 
 
 def comment_delete(request, slug, comment_id):
+   """
+   delete an individual comment.
+   **context**
+   ``post``
+      an instance of :model:`blog.Post`.
+   ``comment``
+      a single comment related to the post
+   """
    queryset = Post.objects.filter(status=1)
    post = get_object_or_404(queryset, slug=slug)
    comment = get_object_or_404(Comment, pk=comment_id)
